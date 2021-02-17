@@ -1,0 +1,78 @@
+---
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: us-east-1a   # North Virginia
+      ImageId: ami-047a51fa27710816e # Change Image Id 
+      InstanceType: t2.micro
+      KeyName: awspractice  # key pair 
+      Monitoring: Yes
+      SecurityGroups:
+        - !Ref SSHSecurityGroup
+ 
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH port 22
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: 22
+        IpProtocol: tcp
+        ToPort: 22
+
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: High CPU Usage
+      FifoTopic: No
+      TopicName: high_cpu_usage
+      Subscription:
+      - Endpoint:  !GetAtt MyFunction.Arn
+        Protocol: lambda
+
+  MyCloudWatchAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: CPU Utilization of EC2
+      AlarmActions:
+      - Ref: MySNSTopic
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      Statistic: Average
+      Period: '60'
+      EvaluationPeriods: '3'
+      Threshold: '40'
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+      - Name: InstanceId
+        Value:
+          Ref: MyInstance
+
+  MyFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: 
+              - lambda.amazonaws.com
+          Action:
+            - sts:AssumeRole
+      ManagedPolicyArns: 
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  
+  MyFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+        Description: Lambda CPU Usage
+        Handler: lambda_function.lambda_handler
+        Runtime: python3.8
+        Role: !GetAtt 'MyFunctionRole.Arn'
+        Timeout: 300
+        Code:
+          S3Bucket: ec2lambdabucket  # change with your S3 bucket name
+          S3Key: lambda.zip  # change with your key name
+
