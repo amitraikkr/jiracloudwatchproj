@@ -31,7 +31,7 @@ Following JIRA REST API will be used to interact with JIRA programmatically. You
 <h4>aws s3api create-bucket --bucket entreyours3bucketname --region us-east-1</h4><br>
 <h4>aws s3 cp .\lambda.zip s3://enteryours3bucketname</h4>
 
-<h3> 4. Creating Stack with CloudFormation:<h3> 
+<h3> 4. Creating Stack with CloudFormation:</h3> 
 <p>We need to create the SNS, CloudWatch Alarm and EC2 instance, Security Group, Lambda function and IAM roles. CloudFormation template will create all these resources with configuration and their dependencies. You just need to change the S3 bucket name in CloudFormation template with you S3 bucket that you have created in previous step. Run below AWS CLI command to create CloudFormation Stack from the template</p>
 
 <h4>aws cloudformation create-stack --stack-name myteststack --template-body file://jira_cloudwatch.yaml</h4>
