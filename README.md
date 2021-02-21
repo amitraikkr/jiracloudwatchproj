@@ -28,7 +28,7 @@ Following JIRA REST API will be used to interact with JIRA programmatically. You
 <h3> 3. S3 bucket and Lambda function:</h3>
 <p>You can download the lambda function from GitHub link in your local directory and zip it again or download the zipped to upload on your newly created bucket. Create a S3 bucket and upload your Lambda function using below AWS CLI commands. You need to change S3 bucket name CloudFormation template</p>
 
-<h4>aws s3api create-bucket --bucket entreyours3bucketname --region us-east-1</h4><br>
+<h4>aws s3api create-bucket --bucket entreyours3bucketname --region us-east-1</h4>
 <h4>aws s3 cp .\lambda.zip s3://enteryours3bucketname</h4>
 
 <h3> 4. Creating Stack with CloudFormation:</h3> 
@@ -41,7 +41,7 @@ You can verify all you resource while login into the AWS console.
 <h2>Testing our application</h2>
 <p>Now you can SSH into the Linux EC2 instance from the AWS console and connect using a standalone client or the browser-based SSH connection. You need to run Linux stress utility to stress the CPU which will concurrently increase CPU usage. Stress is a Simple command-line utility used to conduct CPU memory and disk tests. So, run below commands to install some extra Linux packages for Linux Stress utility</p>
 
-<h4>sudo amazon-linux-extras install epel</h4><br>
+<h4>sudo amazon-linux-extras install epel</h4>
 <h4>sudo yum install -y stress</h4>
 
 <p>Now, you can run the below command to beat up the CPU for 5 mins; This will push EC2 CPU to 100% usage. You can then monitor the CloudWatch alarm as the CPU is being stressed. CloudWatch Alarm will be changed from ‘OK’ to ‘In Alarm’ state. </p>
